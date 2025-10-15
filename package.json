@@ -1,0 +1,26 @@
+{
+  "name": "vakalath-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "docx4js": "^3.3.0",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "htmlparser2": "^10.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.11.0",
+    "mongoose": "^8.18.1",
+    "xml2js": "^0.6.2"
+  }
+}
