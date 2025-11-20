@@ -25,7 +25,16 @@ const caseSchema = new mongoose.Schema({
   ToDistrict: { type: String },
   FilledFrom: { type: String },
   Place: { type: String },
-  Userid: { type: String }
+  Userid: { type: String },
+
+  CouncilName: { type: String },
+  CouncilAddress: { type: String },
+  DateOfFiling: { type: Date },
+  PetitionerName1: { type: String },
+  RespondentName1: { type: String },
+  Category: { type: String },
+  CaseType: { type: String },
+  Form: { type: String },
 });
 
 module.exports = mongoose.model('Case', caseSchema);
