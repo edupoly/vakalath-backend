@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 
-dotenv.config();
+dotenv.config({path:__dirname+"/.env"});
 connectDB();
 
 app.use("/api/users", userRoutes);
