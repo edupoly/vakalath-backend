@@ -9,18 +9,19 @@ exports.register = async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'Email already exists' });
+      return res.json({ message: 'Email already exists',status:400 });
     }
-
+    
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("existingUser",hashedPassword,password);
 
     // Create new user
-    const newUser = new User({ firstname, lastname, email, number, username, password: hashedPassword });
+    const newUser = new User({ firstname, lastname, email, number, password: hashedPassword });
     await newUser.save();
 
-    res.status(200).json({ message: 'User registered', user: newUser });
+    res.json({ message: 'User registered', user: newUser,status:201 });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.json({ message: 'Server error', error: error.message,status:500 });
   }
 };
 
@@ -28,14 +29,16 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const user = await User.findOne({  $or: [{ email: username }, { number: (/^\d{10}$/.test(username)) ? Number(username) : null }] });
+    console.log(user);
+    
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: 'Invalid credentials',status:401 });
+      return res.json({ message: 'Invalid credentials',status:401 });
     }
 
     const token = jwt.sign({ id: user['_id'] }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    return res.status(200).json({
+    return res.json({
       status: 200,
       message: 'Login successful',
       token,
