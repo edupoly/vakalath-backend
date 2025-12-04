@@ -7,21 +7,26 @@ exports.register = async (req, res) => {
   try {
     const { firstname, lastname, email, number, username, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ $or: [{ email }, { number }] });
     if (existingUser) {
-      return res.json({ message: 'Email already exists',status:400 });
+      return res.json({
+        message: existingUser.email === email
+          ? 'Email already exists'
+          : 'Number already exists',
+        status: 400
+      });
     }
-    
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("existingUser",hashedPassword,password);
+    console.log("existingUser", hashedPassword, password);
 
     // Create new user
     const newUser = new User({ firstname, lastname, email, number, password: hashedPassword });
     await newUser.save();
 
-    res.json({ message: 'User registered', user: newUser,status:201 });
+    res.json({ message: 'User registered', user: newUser, status: 201 });
   } catch (error) {
-    res.json({ message: 'Server error', error: error.message,status:500 });
+    res.json({ message: 'Server error', error: error.message, status: 500 });
   }
 };
 
@@ -29,11 +34,11 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({  $or: [{ email: username }, { number: (/^\d{10}$/.test(username)) ? Number(username) : null }] });
+    const user = await User.findOne({ $or: [{ email: username }, { number: (/^\d{10}$/.test(username)) ? Number(username) : null }] });
     console.log(user);
-    
+
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.json({ message: 'Invalid credentials',status:401 });
+      return res.json({ message: 'Invalid credentials', status: 401 });
     }
 
     const token = jwt.sign({ id: user['_id'] }, process.env.JWT_SECRET, { expiresIn: '1h' });
