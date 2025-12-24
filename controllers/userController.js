@@ -1,6 +1,7 @@
 const User = require('../models/userModel'); // adjust the path as needed
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// import transporter from "../config/mailer.js";
 
 // Register
 exports.register = async (req, res) => {
@@ -80,3 +81,54 @@ exports.getProfile = async (req, res) => {
   }
 
 };
+
+// export const forgotPassword = async (req, res) => {
+//   try {
+//     const { email } = req.body;
+
+//     const user = await User.findOne({ email });
+//     if (!user) return res.sendStatus(200);
+
+//     const token = jwt.sign(
+//       { id: user._id },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "15m" }
+//     );
+
+//     const link = `http://localhost:5173s/reset-password/${token}`;
+
+//     await transporter.sendMail({
+//       from: process.env.EMAIL_USER,
+//       to: email,
+//       subject: "Reset Password",
+//       html: `<p>Click the link below to reset your password:</p>
+//              <a href="${link}">${link}</a>`,
+//     });
+
+//     res.send("Reset email sent");
+//   } catch (error) {
+//     res.status(500).send("Something went wrong");
+//   }
+// };
+
+// /* RESET PASSWORD */
+// export const resetPassword = async (req, res) => {
+//   const { token, newPassword, confirmPassword } = req.body;
+
+//   if (newPassword !== confirmPassword) {
+//     return res.status(400).send("Passwords do not match");
+//   }
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+//     await User.findByIdAndUpdate(decoded.id, {
+//       password: hashedPassword,
+//     });
+
+//     res.send("Password reset successful");
+//   } catch (error) {
+//     res.status(400).send("Invalid or expired token");
+//   }
+// };
